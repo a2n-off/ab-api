@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { BladeLogger } from '../logger/logger.service';
+import { Logger } from 'nestjs-pino/dist';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly blade: BladeLogger) {
-    this.blade.setCaller('AppService');
-  }
+  constructor(private readonly logger: Logger) {}
 
   getHello(): string {
-    this.blade.log('Hello world');
+    this.logger.log('log', AppService.name);
     return 'Hello World!';
   }
 }
