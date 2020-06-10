@@ -18,23 +18,23 @@ export class BladeLogger implements LoggerService {
     return caller ? `${icon} [${caller}] ${message}` : `${icon} [no caller] ${message}`;
   }
 
-  public log(message: string): string {
-    return BladeLogger.setLog('🔊', message, this.caller);
+  public log(message: string): void {
+    console.log(BladeLogger.setLog('🔊', message, this.caller));
   }
 
-  public error(message: string, trace: string): string {
-    return BladeLogger.setLog('🔥', `${message} ${trace}`, this.caller);
+  public error(message: string, trace: string): void {
+    console.error(BladeLogger.setLog('🔥', `${message} ${trace}`, this.caller));
   }
 
-  public warn(message: string): string {
-    return BladeLogger.setLog('🚨', message, this.caller);
+  public warn(message: string): void {
+    console.warn(BladeLogger.setLog('🚨', message, this.caller));
   }
 
-  public debug(message: string): string {
-    return BladeLogger.setLog('⚓', message, this.caller);
+  public debug(message: string): void {
+    console.debug(BladeLogger.setLog('⚓', message, this.caller));
   }
 
-  public verbose(message: string): string {
-    return BladeLogger.setLog('🤖', message, this.caller);
+  public verbose(message: string): void {
+    console.log(BladeLogger.setLog('🤖', message, this.caller));
   }
 }
