@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Users } from './users.schema';
@@ -35,10 +35,15 @@ export class UsersService {
    * create one user
    * @param {string} name the username
    * @param {string} password the unencrypted password
-   * @return {Users}
+   * @return {string}
    */
   async createUser(name: string, password: string): Promise<Users> {
     const user = new this.usersModel({name, password});
-    return user.save();
+    return user.save((err: unknown, user: Users) => {
+      if (err) {
+        throw new BadRequestException(err);
+      }
+      return `${user.name} created`;
+    });
   }
 }
