@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
@@ -10,6 +10,12 @@ export class UsersController {
   @Get()
   getUser(): Promise<Users[]> {
     return this.userService.getUser();
+  }
+
+  @Get('/:column/:value')
+  getUserByColumn(@Param() param: {[key: string]: string}): Promise<Users[]> {
+    const { column, value } = param;
+    return this.userService.getUserByColumn(column, value);
   }
 
   @Post()

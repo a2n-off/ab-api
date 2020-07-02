@@ -18,6 +18,19 @@ export class UsersService {
   }
 
   /**
+   * return one user without the password field
+   * @return {Users[]} the users in the collection
+   */
+  async getUserByColumn(column: string, value: string): Promise<Users[]> {
+    const query = {};
+    query[column] = value;
+    return this.usersModel.aggregate([
+      {$match: query},
+      {$project: {password: 0}}
+    ]);
+  }
+
+  /**
    * create one user
    * @param {string} name the username
    * @param {string} password the unencrypted password
