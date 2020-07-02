@@ -18,7 +18,8 @@ export class UsersService {
   }
 
   /**
-   * return one user without the password field
+   * return all the user selected by the column = value couple
+   * without the password field
    * @return {Users[]} the users in the collection
    */
   async getUserByColumn(column: string, value: string): Promise<Users[]> {

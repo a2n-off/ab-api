@@ -4,10 +4,10 @@ import { Document } from 'mongoose';
 @Schema()
 export class Users extends Document {
 
-  @Prop({unique: true, minlength: 3, required: true, validate: value => {return value.length === 4}})
+  @Prop()
   name: string;
 
-  @Prop({required: true})
+  @Prop()
   password: string;
 
 }
