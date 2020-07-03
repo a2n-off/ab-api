@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Users } from './users.schema';
+import { UsersDto } from './users.dto';
 
 @Injectable()
 export class UsersService {
@@ -35,7 +36,7 @@ export class UsersService {
    * create one user
    * @param {string} name the username
    * @param {string} password the unencrypted password
-   * @return {string}
+   * @return {Users | string} error or success
    */
   async createUser(name: string, password: string): Promise<Users> {
     const user = new this.usersModel({name, password});
@@ -45,5 +46,15 @@ export class UsersService {
       }
       return `${user.name} created`;
     });
+  }
+
+  /**
+   * edit one user
+   * @param {string} id the user mongo id
+   * @param {object} data the updated data
+   * @return {Users} the updated user
+   */
+  async editUser(id: string, data: UsersDto): Promise<Users> {
+    return this.usersModel.findOneAndUpdate({ _id: id }, data);
   }
 }
