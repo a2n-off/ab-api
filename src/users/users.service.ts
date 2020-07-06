@@ -12,7 +12,7 @@ export class UsersService {
    * return all the user without the password field
    * @return {Users[]} all the users in the collection
    */
-  async getUser(): Promise<Users[]> {
+  async getUsers(): Promise<Users[]> {
     return this.usersModel.aggregate([
       {$project: {password: 0}}
     ]);
@@ -21,9 +21,11 @@ export class UsersService {
   /**
    * return all the user selected by the column = value couple
    * without the password field
-   * @return {Users[]} the users in the collection
+   * @param {string} column the name of the column
+   * @param {string} value the discriminant
+   * @return {Users[]} the filtered users in the collection
    */
-  async getUserByColumn(column: string, value: string): Promise<Users[]> {
+  async getUsersByColumn(column: string, value: string): Promise<Users[]> {
     const query = {};
     query[column] = value;
     return this.usersModel.aggregate([

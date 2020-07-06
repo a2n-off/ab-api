@@ -9,14 +9,14 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get()
-  getUser(): Promise<Users[]> {
-    return this.userService.getUser();
+  getUsers(): Promise<Users[]> {
+    return this.userService.getUsers();
   }
 
   @Get('/:column/:value')
-  getUserByColumn(@Param() param: {[key: string]: string}): Promise<Users[]> {
+  getUsersByColumn(@Param() param: {[key: string]: string}): Promise<Users[]> {
     const { column, value } = param;
-    return this.userService.getUserByColumn(column, value);
+    return this.userService.getUsersByColumn(column, value);
   }
 
   @Post()
