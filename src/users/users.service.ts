@@ -36,12 +36,11 @@ export class UsersService {
 
   /**
    * create one user
-   * @param {string} name the username
-   * @param {string} password the unencrypted password
+   * @param {Users} data user object
    * @return {Users | string} error or success
    */
-  async createUser(name: string, password: string): Promise<Users> {
-    const user = new this.usersModel({name, password});
+  async createUser(data: Users): Promise<Users> {
+    const user = new this.usersModel(data);
     return user.save((err: unknown, user: Users) => {
       if (err) {
         throw new BadRequestException(err);
@@ -58,5 +57,16 @@ export class UsersService {
    */
   async editUser(id: string, data: UsersDto): Promise<Users> {
     return this.usersModel.findOneAndUpdate({ _id: id }, data);
+  }
+
+  /**
+   * check if a user already exist in the db via the column = value couple
+   * @param {string} column the name of the column
+   * @param {string} value the discriminant
+   * @return {boolean} user exist or not
+   */
+  async userAlreadyExist(column: string, value: string): Promise<boolean> {
+    const userExist = await this.getUsersByColumn(column, value);
+    return userExist.length > 0;
   }
 }

@@ -20,7 +20,7 @@ export class CategoriesController {
 
   @Post()
   createCategories(@Body() body: CategoriesDto): Promise<Categories> {
-    return this.categoriesService.createCategory(body.name);
+    return this.categoriesService.createCategory(body as Categories);
   }
 
   @Put('/:id')

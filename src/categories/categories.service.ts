@@ -32,10 +32,10 @@ export class CategoriesService {
 
   /**
    * create one category
-   * @param {string} name the category name
+   * @param {Categories} data the category object
    * @return {Categories | string} error or success
    */
-  async createCategory(name: string): Promise<Categories> {
+  async createCategory(data: Categories): Promise<Categories> {
     const category = new this.categoriesModel({name});
     return category.save((err: unknown, category: Categories) => {
       if (err) {
