@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Categories } from './categories.schema';
 import { CategoriesDto } from './categories.dto';
