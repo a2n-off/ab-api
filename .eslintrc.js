@@ -1,12 +1,8 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: 'tsconfig.json',
-    sourceType: 'module',
-  },
-  plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
-    'plugin:@typescript-eslint/eslint-recommended',
+    'airbnb-base',
+    'plugin:import/typescript',
     'plugin:@typescript-eslint/recommended',
     'prettier',
     'prettier/@typescript-eslint',
@@ -15,12 +11,20 @@ module.exports = {
   env: {
     node: true,
     jest: true,
-    es2020: true,
   },
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    'import/no-extraneous-dependencies': [
+      'error',
+      { devDependencies: ['**/*spec.ts'] },
+    ],
+    'no-useless-constructor': 'off',
+    '@typescript-eslint/no-useless-constructor': 'error',
+    'import/extensions': 'off',
+    'import/prefer-default-export': 'off',
+    'padded-blocks': 'off',
+    'indent': ['error', 2],
+    'object-curly-spacing': ['error', 'always'],
+    'space-in-parens': ['error', 'never'],
+    'no-console': 'error'
   },
 };
-
