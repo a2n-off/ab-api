@@ -1,4 +1,5 @@
-import { IsDate, IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsDate, IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { Schema as mongooseSchema } from "mongoose";
 
 export class ArticlesDto {
   @IsString()
@@ -7,11 +8,19 @@ export class ArticlesDto {
   readonly title: string;
 
   @IsDate()
-  @IsNotEmpty()
+  @IsOptional()
   readonly date: Date;
 
   @IsString()
   @IsNotEmpty()
   @Length(10)
   readonly content: string;
+
+  @IsMongoId()
+  @IsNotEmpty()
+  readonly authorId: {type: mongooseSchema.Types.ObjectId, ref: 'users'};
+
+  @IsMongoId()
+  @IsNotEmpty()
+  readonly categoryId: {type: mongooseSchema.Types.ObjectId, ref: 'categories'};
 }

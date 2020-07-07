@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Articles } from './articles.schema';
 import { ArticlesDto } from './articles.dto';
@@ -7,25 +7,64 @@ import { ArticlesDto } from './articles.dto';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
+  /**
+   * return all the article
+   * @return {Articles[]} the articles collection
+   */
   @Get()
   getArticles(): Promise<Articles[]> {
     return this.articlesService.getArticles();
   }
 
-  @Get('/:column/:value')
-  getArticlesByColumn(@Param() param: {[key: string]: string}): Promise<Articles[]> {
-    const { column, value } = param;
-    return this.articlesService.getArticlesByColumn(column, value);
+  /**
+   * return all the filtered article
+   * @param {string} field the field name
+   * @param {string} value the value to filter the data
+   * @return {Articles[]} the filtered article
+   */
+  @Get('/:field/:value')
+  getArticlesByColumn(@Param('field') field: string, @Param('value') value: string): Promise<Articles[]> {
+    return this.articlesService.getArticlesByField(field, value);
   }
 
+  /**
+   * create one article
+   * @param {ArticlesDto} article the article data
+   * @return {Articles} the created article
+   */
   @Post()
-  createArticles(@Body() body: ArticlesDto): Promise<Articles> {
-    return this.articlesService.createArticles(body as Articles);
+  async createArticles(@Body() article: ArticlesDto): Promise<Articles> {
+
+    /** article title already exist */
+    if (await this.articlesService.articleAlreadyExist('title', article.title)) {
+      throw new ConflictException(`${article.title} already exist`)
+    }
+
+    return this.articlesService.createArticles(article as Articles);
   }
 
+  /**
+   * edit one article
+   * @param {string} id the article id you want to edit
+   * @param {ArticlesDto} updatedArticle the updated article data
+   */
   @Put('/:id')
-  editArticles(@Param() param: {[key: string]: string}, @Body() body: ArticlesDto): Promise<Articles> {
-    const { id } = param;
-    return this.articlesService.editArticles(id, body);
+  async editArticles(@Param('id') id: string, @Body() updatedArticle: ArticlesDto): Promise<Articles> {
+
+    /** article doesn't exist */
+    const articleExist = await this.articlesService.articleAlreadyExist('_id', id);
+    if (!articleExist) {
+      throw new BadRequestException(`${updatedArticle.title} doesn't exist`)
+    }
+
+    /** updated article title already exist */
+    if (updatedArticle.title) {
+      const articleTitleExist = await this.articlesService.articleAlreadyExist('title', updatedArticle.title);
+      if (articleTitleExist) {
+        throw new ConflictException(`${updatedArticle.title} already exist`)
+      }
+    }
+
+    return this.articlesService.editArticles(id, updatedArticle);
   }
 }

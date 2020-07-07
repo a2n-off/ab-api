@@ -18,13 +18,13 @@ export class ArticlesService {
 
   /**
    * return all the articles selected by the column = value couple
-   * @param {string} column the name of the column
+   * @param {string} field the name of the column
    * @param {string} value the discriminant
    * @return {Categories[]} the filtered articles in the collection
    */
-  async getArticlesByColumn(column: string, value: string): Promise<Articles[]> {
+  async getArticlesByField(field: string, value: string): Promise<Articles[]> {
     const query = {};
-    query[column] = value;
+    query[field] = value;
     return this.articlesModel.aggregate([
       {$match: query}
     ])
@@ -32,26 +32,37 @@ export class ArticlesService {
 
   /**
    * create one articles
-   * @param {Articles} data the articles object
+   * @param {Articles} article the articles object
    * @return {Articles | string} error or success
    */
-  async createArticles(data: Articles): Promise<Articles> {
-    const articles = new this.articlesModel(data);
-    return articles.save((err: unknown, articles: Articles) => {
+  async createArticles(article: Articles): Promise<Articles> {
+    const newArticle = new this.articlesModel(article);
+    return newArticle.save((err: unknown, article: Articles) => {
       if (err) {
         throw new BadRequestException(err);
       }
-      return `${articles.title} created`;
+      return `${article.title} created`;
     })
   }
 
   /**
    * edit one articles
    * @param {string} id the articles mongo id
-   * @param {object} data the updated data
+   * @param {object} updatedArticle the updated data
    * @return {Categories} the updated articles
    */
-  async editArticles(id: string, data: ArticlesDto): Promise<Articles> {
-    return this.articlesModel.findOneAndUpdate({ _id: id }, data);
+  async editArticles(id: string, updatedArticle: ArticlesDto): Promise<Articles> {
+    return this.articlesModel.findOneAndUpdate({ _id: id }, updatedArticle);
+  }
+
+  /**
+   * check if a article already exist in the db via the column = value couple
+   * @param {string} field the name of the column
+   * @param {string} value the discriminant
+   * @return {boolean} article exist or not
+   */
+  async articleAlreadyExist(field: string, value: string): Promise<boolean> {
+    const articleExist = await this.getArticlesByField(field, value);
+    return articleExist.length > 0;
   }
 }

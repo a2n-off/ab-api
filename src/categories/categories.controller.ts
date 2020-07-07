@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Categories } from './categories.schema';
 import { CategoriesDto } from './categories.dto';
@@ -7,25 +7,64 @@ import { CategoriesDto } from './categories.dto';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  /**
+   * return all the categories
+   * @return {Categories[]} the categories collection
+   */
   @Get()
   getCategories(): Promise<Categories[]> {
     return this.categoriesService.getCategories();
   }
 
-  @Get('/:column/:value')
-  getCategoriesByColumn(@Param() param: {[key: string]: string}): Promise<Categories[]> {
-    const { column, value } = param;
-    return this.categoriesService.getCategoriesByColumn(column, value);
+  /**
+   * return all the filtered categories
+   * @param {string} field the field name
+   * @param {string} value the value to filter the data
+   * @return {Categories[]} the filtered categories
+   */
+  @Get('/:field/:value')
+  getCategoriesByColumn(@Param('field') field: string, @Param('value') value: string): Promise<Categories[]> {
+    return this.categoriesService.getCategoriesByField(field, value);
   }
 
+  /**
+   * create one categories
+   * @param {CategoriesDto} category the category data
+   * @return {Categories} the created category
+   */
   @Post()
-  createCategories(@Body() body: CategoriesDto): Promise<Categories> {
-    return this.categoriesService.createCategory(body as Categories);
+  async createCategories(@Body() category: CategoriesDto): Promise<Categories> {
+
+    /** category name already exist */
+    if (await this.categoriesService.categoryAlreadyExist('name', category.name)) {
+      throw new ConflictException(`${category.name} already exist`)
+    }
+
+    return this.categoriesService.createCategory(category as Categories);
   }
 
+  /**
+   * edit one category
+   * @param {string} id the category id you want to edit
+   * @param {CategoriesDto} updatedCategory the updated category data
+   */
   @Put('/:id')
-  editCategory(@Param() param: {[key: string]: string}, @Body() body: CategoriesDto): Promise<Categories> {
-    const { id } = param;
-    return this.categoriesService.editCategory(id, body);
+  async editCategory(@Param('id') id: string, @Body() updatedCategory: CategoriesDto): Promise<Categories> {
+
+    /** category doesn't exist */
+    const categoryExist = await this.categoriesService.categoryAlreadyExist('_id', id);
+    if (!categoryExist) {
+      throw new BadRequestException(`${updatedCategory.name} doesn't exist`)
+    }
+
+    /** updated category name already exist */
+    if (updatedCategory.name) {
+      const categoryNameExist = await this.categoriesService.categoryAlreadyExist('name', updatedCategory.name);
+      if (categoryNameExist) {
+        throw new ConflictException(`${updatedCategory.name} already exist`)
+      }
+    }
+
+    return this.categoriesService.editCategory(id, updatedCategory);
   }
 }

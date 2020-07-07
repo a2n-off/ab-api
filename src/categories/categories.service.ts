@@ -18,13 +18,13 @@ export class CategoriesService {
 
   /**
    * return all the categories selected by the column = value couple
-   * @param {string} column the name of the column
+   * @param {string} field the name of the column
    * @param {string} value the discriminant
    * @return {Categories[]} the filtered categories in the collection
    */
-  async getCategoriesByColumn(column: string, value: string): Promise<Categories[]> {
+  async getCategoriesByField(field: string, value: string): Promise<Categories[]> {
     const query = {};
-    query[column] = value;
+    query[field] = value;
     return this.categoriesModel.aggregate([
       {$match: query}
     ])
@@ -32,12 +32,12 @@ export class CategoriesService {
 
   /**
    * create one category
-   * @param {Categories} data the category object
+   * @param {Categories} category the category object
    * @return {Categories | string} error or success
    */
-  async createCategory(data: Categories): Promise<Categories> {
-    const category = new this.categoriesModel({name});
-    return category.save((err: unknown, category: Categories) => {
+  async createCategory(category: Categories): Promise<Categories> {
+    const newCategory = new this.categoriesModel(category);
+    return newCategory.save((err: unknown, category: Categories) => {
       if (err) {
         throw new BadRequestException(err);
       }
@@ -48,10 +48,21 @@ export class CategoriesService {
   /**
    * edit one category
    * @param {string} id the category mongo id
-   * @param {object} data the updated data
+   * @param {CategoriesDto} updatedCategory the updated data
    * @return {Categories} the updated category
    */
-  async editCategory(id: string, data: CategoriesDto): Promise<Categories> {
-    return this.categoriesModel.findOneAndUpdate({ _id: id }, data);
+  async editCategory(id: string, updatedCategory: CategoriesDto): Promise<Categories> {
+    return this.categoriesModel.findOneAndUpdate({ _id: id }, updatedCategory);
+  }
+
+  /**
+   * check if a category already exist in the db via the column = value couple
+   * @param {string} field the name of the column
+   * @param {string} value the discriminant
+   * @return {boolean} category exist or not
+   */
+  async categoryAlreadyExist(field: string, value: string): Promise<boolean> {
+    const categoryExist = await this.getCategoriesByField(field, value);
+    return categoryExist.length > 0;
   }
 }
