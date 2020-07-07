@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
 import { UsersModule } from '../users/users.module';
+import { LoggerModule } from 'nestjs-pino/dist';
+import { ArticlesModule } from '../articles/articles.module';
+import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { UsersModule } from '../users/users.module';
     }),
     ConfigModule,
     UsersModule,
+    ArticlesModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
