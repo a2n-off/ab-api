@@ -3,6 +3,8 @@
   "private": false,
   "version": "1.0.0",
   "description": "Personal api",
+  "author": "Alan Bouteiller <bouteiller.alan@gmail.com>",
+  "repository": "https://github.com/bouteillerAlan/ab-api",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -50,6 +52,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.20.2",
     "jest": "^26.0.1",
+    "jest-serial-runner": "^1.1.0",
     "pino-pretty": "^4.0.0",
     "prettier": "^2.0.5",
     "supertest": "^4.0.2",
@@ -60,6 +63,16 @@
     "typescript": "^3.9.3"
   },
   "jest": {
+    "displayName": {
+      "name": "API",
+      "color": "blue"
+    },
+    "verbose": true,
+    "runner": "jest-serial-runner",
+    "testSequencer": "../src/_test/sequencer.jest.js",
+    "setupFiles": [
+      "dotenv/config"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",
