@@ -21,13 +21,13 @@ export class UsersService {
   /**
    * return all the user selected by the column = value couple
    * without the password field
-   * @param {string} column the name of the column
-   * @param {string} value the discriminant
+   * @param {string} field the name
+   * @param {string} value the value to filter the data
    * @return {Users[]} the filtered users in the collection
    */
-  async getUsersByColumn(column: string, value: string): Promise<Users[]> {
+  async getUsersByField(field: string, value: string): Promise<Users[]> {
     const query = {};
-    query[column] = value;
+    query[field] = value;
     return this.usersModel.aggregate([
       {$match: query},
       {$project: {password: 0}}
@@ -36,12 +36,12 @@ export class UsersService {
 
   /**
    * create one user
-   * @param {Users} data user object
+   * @param {Users} user user object
    * @return {Users | string} error or success
    */
-  async createUser(data: Users): Promise<Users> {
-    const user = new this.usersModel(data);
-    return user.save((err: unknown, user: Users) => {
+  async createUser(user: Users): Promise<Users> {
+    const newUser = new this.usersModel(user);
+    return newUser.save((err: unknown, user: Users) => {
       if (err) {
         throw new BadRequestException(err);
       }
@@ -52,21 +52,21 @@ export class UsersService {
   /**
    * edit one user
    * @param {string} id the user mongo id
-   * @param {object} data the updated data
+   * @param {object} updatedUser the updated data
    * @return {Users} the updated user
    */
-  async editUser(id: string, data: UsersDto): Promise<Users> {
-    return this.usersModel.findOneAndUpdate({ _id: id }, data);
+  async editUser(id: string, updatedUser: UsersDto): Promise<Users> {
+    return this.usersModel.findOneAndUpdate({ _id: id }, updatedUser);
   }
 
   /**
    * check if a user already exist in the db via the column = value couple
-   * @param {string} column the name of the column
+   * @param {string} field the name of the column
    * @param {string} value the discriminant
    * @return {boolean} user exist or not
    */
-  async userAlreadyExist(column: string, value: string): Promise<boolean> {
-    const userExist = await this.getUsersByColumn(column, value);
+  async userAlreadyExist(field: string, value: string): Promise<boolean> {
+    const userExist = await this.getUsersByField(field, value);
     return userExist.length > 0;
   }
 }

@@ -29,52 +29,59 @@ export class UsersController {
 
   /**
    * return all the filtered user
-   * @param {{column, value}} param the filter
+   * @param {string} field the field name
+   * @param {string} value the value to filter the data
    * @return {Users[]} the filtered user
    */
-  @Get('/:column/:value')
-  getUsersByColumn(@Param() param: {[key: string]: string}): Promise<Users[]> {
-    const { column, value } = param;
-    return this.userService.getUsersByColumn(column, value);
+  @Get('/:field/:value')
+  getUsersByField(@Param('field') field: string, @Param('value') value: string): Promise<Users[]> {
+    return this.userService.getUsersByField(field, value);
   }
 
   /**
    * create one user
-   * @param {UsersDto} body the user data
+   * @param {UsersDto} user the user data
    * @return {Users} the created user
    */
   @Post()
   @UseFilters(MongoExceptionFilter)
-  async createUser(@Body() body: UsersDto): Promise<Users> {
+  async createUser(@Body() user: UsersDto): Promise<Users> {
 
-    if (await this.userService.userAlreadyExist('name', body.name)) {
-      throw new ConflictException(`${body.name} already exist`)
+    /** user name already exist */
+    if (await this.userService.userAlreadyExist('name', user.name)) {
+      throw new ConflictException(`${user.name} already exist`)
     }
 
-    return this.userService.createUser(body as Users);
+    return this.userService.createUser(user as Users);
   }
 
   /**
    * edit one user
-   * @param {{id}} param the user id you want to edit
-   * @param {UsersDto} body the updated data
+   * @param {string} id the user id you want to edit
+   * @param {UsersDto} updatedUser the updated user data
    */
   @Put('/:id')
-  async editUser(@Param() param: {[key: string]: string}, @Body() body: UsersDto): Promise<Users> {
-    const { id } = param;
+  async editUser(@Param('id') id: string, @Body() updatedUser: UsersDto): Promise<Users> {
 
-    const userExist = this.userService.userAlreadyExist('_id', id);
-    if (userExist) {
-      throw new BadRequestException(`${body.name} doesn't exist`)
+    /** user doesn't exist */
+    const userExist = await this.userService.userAlreadyExist('_id', id);
+    if (!userExist) {
+      throw new BadRequestException(`${updatedUser.name} doesn't exist`)
     }
 
-    if (body.name) {
-      const userExist = this.userService.userAlreadyExist('name', body.name);
-      if (userExist) {
-        throw new ConflictException(`${body.name} already exist`)
+    /** updated user name already exist */
+    if (updatedUser.name) {
+      const userNameExist = await this.userService.userAlreadyExist('name', updatedUser.name);
+      if (userNameExist) {
+        throw new ConflictException(`${updatedUser.name} already exist`)
       }
     }
 
-    return this.userService.editUser(id, body);
+    /** updated password bcrypt */
+    if (updatedUser.password) {
+      // todo
+    }
+
+    return this.userService.editUser(id, updatedUser);
   }
 }
