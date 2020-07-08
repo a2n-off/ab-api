@@ -11,4 +11,7 @@ jobs:
         with:
           node-version: 13
       - run: yarn
-      - run: NODE_ENV=github_action yarn test
+      - run: yarn test
+        env:
+          NODE_ENV: github_action
+          db_user: ${{ secrets.DB_USER }}
