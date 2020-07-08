@@ -14,7 +14,7 @@ export class UsersService {
    */
   async getUsers(): Promise<Users[]> {
     return this.usersModel.aggregate([
-      {$project: {password: 0}}
+      { $project: { password: 0 } }
     ]);
   }
 
@@ -29,8 +29,8 @@ export class UsersService {
     const query = {};
     query[field] = value;
     return this.usersModel.aggregate([
-      {$match: query},
-      {$project: {password: 0}}
+      { $match: query },
+      { $project: { password: 0 } }
     ]);
   }
 
@@ -41,11 +41,11 @@ export class UsersService {
    */
   async createUser(user: Users): Promise<Users> {
     const newUser = new this.usersModel(user);
-    return newUser.save((err: unknown, user: Users) => {
+    return newUser.save((err: unknown, returnedUser: Users) => {
       if (err) {
         throw new BadRequestException(err);
       }
-      return `${user.name} created`;
+      return `${returnedUser.name} created`;
     });
   }
 

@@ -25,6 +25,8 @@
     "indent": ["error", 2],
     "object-curly-spacing": ["error", "always"],
     "space-in-parens": ["error", "never"],
-    "no-console": "error"
+    "no-console": "error",
+    "new-cap": "off",
+    "class-methods-use-this": "off"
   }
 }

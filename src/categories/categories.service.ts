@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Categories } from './categories.schema';
-import { Model } from 'mongoose';
 import { CategoriesDto } from './categories.dto';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class CategoriesService {
     const query = {};
     query[field] = value;
     return this.categoriesModel.aggregate([
-      {$match: query}
+      { $match: query }
     ])
   }
 
@@ -37,11 +37,11 @@ export class CategoriesService {
    */
   async createCategory(category: Categories): Promise<Categories> {
     const newCategory = new this.categoriesModel(category);
-    return newCategory.save((err: unknown, category: Categories) => {
+    return newCategory.save((err: unknown, returnedCategory: Categories) => {
       if (err) {
         throw new BadRequestException(err);
       }
-      return `${category.name} created`;
+      return `${returnedCategory.name} created`;
     })
   }
 

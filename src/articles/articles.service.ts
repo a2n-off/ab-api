@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Articles } from './articles.schema';
-import { Model } from 'mongoose';
 import { ArticlesDto } from './articles.dto';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class ArticlesService {
     const query = {};
     query[field] = value;
     return this.articlesModel.aggregate([
-      {$match: query}
+      { $match: query }
     ])
   }
 
@@ -37,11 +37,11 @@ export class ArticlesService {
    */
   async createArticles(article: Articles): Promise<Articles> {
     const newArticle = new this.articlesModel(article);
-    return newArticle.save((err: unknown, article: Articles) => {
+    return newArticle.save((err: unknown, returnedArticle: Articles) => {
       if (err) {
         throw new BadRequestException(err);
       }
-      return `${article.title} created`;
+      return `${returnedArticle.title} created`;
     })
   }
 

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { LoggerModule } from 'nestjs-pino/dist';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
 import { UsersModule } from '../users/users.module';
-import { LoggerModule } from 'nestjs-pino/dist';
 import { ArticlesModule } from '../articles/articles.module';
 import { CategoriesModule } from '../categories/categories.module';
 
