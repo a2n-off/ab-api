@@ -1,5 +1,7 @@
 ![GitHub](https://img.shields.io/github/license/bouteillerAlan/ab-api?style=flat-square)
 
+[[Description](#description)] | [[Install](#install)] | [[.env file](#env-file)] | [[Test](#test)] | [[Roadmap](#roadmap)]
+
 # ab-api
 
 Personal clean nest api
@@ -40,27 +42,34 @@ db_name = the db name
 
 # Test
 
+## operation
+
 Launch test with `yarn test`.
 
-The script consumes the `.env` file.
+The script consumes the `.env.test` file **that you have to create** in the `src/_test/config` folder.
 
-Each test file must be named according to the following scheme : `number_file-name`.
+## edit
 
-> Example `10_app.spec.ts`
+- Each config file need to be write in typescript.
+- Each config file need to be place in the `config` folder.
+- Each test file need to be named after the following scheme : `number_file-name`
+  > Example `10_app.spec.ts`
 
-This allows the jest sequencer to run the files in the desired order.
+  This allows the jest sequencer (in `src/_test/config`) to run the files in the desired order.
+- Each test need to be fragmented with `describe` and `it` block
 
 # Roadmap
 
 - [ ] users, categories, articles delete endpoint
 - [ ] check rest api best practices
-- [ ] set `.env.test` for test env
+- [x] set `.env.test` for test env
 - [ ] bcrypt
 - [ ] add security
     - [ ] jwt 
     - [ ] roles
     - [ ] id in payload
 - [ ] check security handbook
+- [ ] mongo login/out test
 - [ ] crud users test
 - [ ] crud categories test
 - [ ] crud articles test
