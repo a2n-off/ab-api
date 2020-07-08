@@ -3,6 +3,8 @@ name: Test Package
 on: [push]
 
 jobs:
+  env:
+    NODE_ENV: github_action
   test:
     runs-on: ubuntu-latest
     steps:
@@ -10,7 +12,5 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 13
-          env:
-            NODE_ENV: github_action
       - run: yarn
       - run: yarn test
