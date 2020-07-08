@@ -1,4 +1,6 @@
 ![GitHub](https://img.shields.io/github/license/bouteillerAlan/ab-api?style=flat-square)
+![](https://www.code-inspector.com/project/10770/score/svg)
+![](https://www.code-inspector.com/project/10770/status/svg)
 
 [[Description](#description)] | [[Install](#install)] | [[.env file](#env-file)] | [[Test](#test)] | [[Roadmap](#roadmap)]
 
