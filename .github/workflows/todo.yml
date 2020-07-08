@@ -1,4 +1,4 @@
-name: Workflow
+name: Todo to issue
 
 on:
   push:
