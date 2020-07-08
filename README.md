@@ -13,7 +13,7 @@ The update of the packages being the "only" to do
 # Install
 
 - [ ] Update the package with `yarn`
-- [ ] add `.env` (see [§ .env](#.env))
+- [ ] add `.env` (see [§ .env](#env-file))
 - [ ] create db user
 
 ```mongojs
