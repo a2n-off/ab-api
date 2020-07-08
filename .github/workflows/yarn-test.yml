@@ -6,11 +6,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      env:
-        NODE_ENV: github_action
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: 13
+          env:
+            NODE_ENV: github_action
       - run: yarn
       - run: yarn test
