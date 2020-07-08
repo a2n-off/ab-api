@@ -70,9 +70,9 @@
     },
     "verbose": true,
     "runner": "jest-serial-runner",
-    "testSequencer": "../src/_test/sequencer.jest.js",
+    "testSequencer": "../src/_test/config/sequencer.jest.js",
     "setupFiles": [
-      "dotenv/config"
+      "../src/_test/config/dotenv.module.ts"
     ],
     "moduleFileExtensions": [
       "js",
