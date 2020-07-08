@@ -28,7 +28,7 @@ db.createUser({user: "toto", pwd: "mypswd", roles: [{role: "readWrite", db: "myd
 
 For development env : `.env.development`
 
-For test env : `.env`
+For test env : `.env.test` in `src/_test/config`
 
 For prod env : `.env`
 
