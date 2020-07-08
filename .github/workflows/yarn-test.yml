@@ -15,3 +15,7 @@ jobs:
         env:
           NODE_ENV: github_action
           db_user: ${{ secrets.DB_USER }}
+          db_pass: ${{ secrets.DB_PASS }}
+          db_uri: ${{ secrets.DB_URI }}
+          db_port: ${{ secrets.DB_PORT }}
+          db_name: ${{ secrets.DB_NAME }}
