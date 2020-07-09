@@ -82,6 +82,7 @@ export class UsersController {
     /** updated password bcrypt */
     if (updatedUser.password) {
       // todo bcrypt password
+      // todo test action
     }
 
     return this.userService.editUser(id, updatedUser);
