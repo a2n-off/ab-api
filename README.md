@@ -60,6 +60,9 @@ The script consumes the `.env.test` file **that you have to create** in the `src
 
 # Roadmap
 
+- [ ] add CONTRIBUTING.md
+- [x] add CODE_OF_CONDUCT.md
+- [x] add issues templates
 - [ ] users, categories, articles delete endpoint
 - [ ] check rest api best practices
 - [x] set `.env.test` for test env
