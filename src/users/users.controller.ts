@@ -52,7 +52,7 @@ export class UsersController {
       throw new ConflictException(`${user.name} already exist`)
     }
 
-
+    // todo bcrypt password
 
     return this.userService.createUser(user as Users);
   }
@@ -81,7 +81,7 @@ export class UsersController {
 
     /** updated password bcrypt */
     if (updatedUser.password) {
-
+      // todo bcrypt password
     }
 
     return this.userService.editUser(id, updatedUser);
