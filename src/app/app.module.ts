@@ -24,7 +24,7 @@ import { CategoriesModule } from '../categories/categories.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (env: ConfigService) => ({
-        uri: process.env.MONGO_URL || `mongodb://${env.get('db_user')}:${env.get('db_pass')}@${env.get('db_uri')}:${env.get('db_port')}/${env.get('db_name')}`,
+        uri: env.qualifiedMongoUri(),
         useNewUrlParser: true,
         useUnifiedTopology: true
       })
