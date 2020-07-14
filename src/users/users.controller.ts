@@ -13,10 +13,17 @@ import { UsersService } from './users.service';
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
 import { MongoExceptionFilter } from '../utils/mongoExceptionFilter/mongoExceptionFilter';
+import * as bcrypt from 'bcrypt';
+import { ConfigService } from '../config/config.service';
 
 @Controller('/users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+
+  private readonly bcrypt_salt: string;
+
+  constructor(private readonly userService: UsersService, private readonly env: ConfigService) {
+    this.bcrypt_salt = this.env.get('bcrypt_salt');
+  }
 
   /**
    * return all the user
@@ -52,9 +59,15 @@ export class UsersController {
       throw new ConflictException(`${user.name} already exist`)
     }
 
-    // todo bcrypt password
+    let bcryptUser = user as Users;
+    await bcrypt.hash(user.password, this.bcrypt_salt, (err: Error, hash: string) => {
+      if (err) {
+        throw new BadRequestException(`error during bcrypt.hash for the user ${user.name} - ${err.message}`)
+      }
+      bcryptUser.password = hash;
+    })
 
-    return this.userService.createUser(user as Users);
+    return this.userService.createUser(bcryptUser);
   }
 
   /**
@@ -80,10 +93,16 @@ export class UsersController {
     }
 
     /** updated password bcrypt */
+    let bcryptUser = updatedUser as Users;
     if (updatedUser.password) {
-      // todo bcrypt password
+      await bcrypt.hash(updatedUser.password, this.bcrypt_salt, (err: Error, hash: string) => {
+        if (err) {
+          throw new BadRequestException(`error during bcrypt.hash for the user ${updatedUser.name} - ${err.message}`)
+        }
+        bcryptUser.password = hash;
+      })
     }
 
-    return this.userService.editUser(id, updatedUser);
+    return this.userService.editUser(id, bcryptUser);
   }
 }
