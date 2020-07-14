@@ -14,9 +14,11 @@ The update of the packages being the "only" to do
 
 # Install
 
+> If your database does not need a password and user does not indicate them in the `.env` file the connection url will adapt itself
+
 - [ ] Update the package with `yarn`
 - [ ] add `.env` (see [§ .env](#env-file))
-- [ ] create db user
+- [ ] create db user *if necessary*
 
 ```mongojs
 use mydb;
@@ -38,6 +40,7 @@ db_pass = the db password
 db_uri  = the db address
 db_port = the db port
 db_name = the db name 
+bcrypt_salt = saltRounds for bcrypt
 ```
 
 # Test
@@ -60,13 +63,13 @@ The script consumes the `.env.test` file **that you have to create** in the `src
 
 # Roadmap
 
-- [ ] add CONTRIBUTING.md
+- [x] add CONTRIBUTING.md
 - [x] add CODE_OF_CONDUCT.md
 - [x] add issues templates
 - [ ] users, categories, articles delete endpoint
 - [ ] check rest api best practices
 - [x] set `.env.test` for test env
-- [ ] bcrypt
+- [x] bcrypt
 - [ ] add security
     - [ ] jwt 
     - [ ] roles
