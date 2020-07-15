@@ -2,27 +2,27 @@ import {
   BadRequestException,
   Body,
   ConflictException,
-  Controller,
+  Controller, Delete,
   Get,
   Param,
   Post,
   Put,
   UseFilters,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
 import { MongoExceptionFilter } from '../utils/mongoExceptionFilter/mongoExceptionFilter';
-import * as bcrypt from 'bcrypt';
 import { ConfigService } from '../config/config.service';
 
 @Controller('/users')
 export class UsersController {
 
-  private readonly bcrypt_salt: string;
+  private readonly bcryptSalt: string;
 
   constructor(private readonly userService: UsersService, private readonly env: ConfigService) {
-    this.bcrypt_salt = this.env.get('bcrypt_salt');
+    this.bcryptSalt = this.env.get('bcryptSalt');
   }
 
   /**
@@ -48,19 +48,19 @@ export class UsersController {
   /**
    * create one user
    * @param {UsersDto} user the user data
-   * @return {Users} the created user
+   * @return {Users | BadRequestException | ConflictException} the created user
    */
   @Post()
   @UseFilters(MongoExceptionFilter)
-  async createUser(@Body() user: UsersDto): Promise<Users> {
+  async createUser(@Body() user: UsersDto): Promise<Users | ConflictException | BadRequestException> {
 
     /** user name already exist */
     if (await this.userService.userAlreadyExist('name', user.name)) {
       throw new ConflictException(`${user.name} already exist`)
     }
 
-    let bcryptUser = user as Users;
-    await bcrypt.hash(user.password, this.bcrypt_salt, (err: Error, hash: string) => {
+    const bcryptUser = user as Users;
+    await bcrypt.hash(user.password, this.bcryptSalt, (err: Error, hash: string) => {
       if (err) {
         throw new BadRequestException(`error during bcrypt.hash for the user ${user.name} - ${err.message}`)
       }
@@ -74,9 +74,10 @@ export class UsersController {
    * edit one user
    * @param {string} id the user id you want to edit
    * @param {UsersDto} updatedUser the updated user data
+   * @return {Users | BadRequestException | ConflictException} the updated user
    */
   @Put('/:id')
-  async editUser(@Param('id') id: string, @Body() updatedUser: UsersDto): Promise<Users> {
+  async editUser(@Param('id') id: string, @Body() updatedUser: UsersDto): Promise<Users | BadRequestException | ConflictException> {
 
     /** user doesn't exist */
     const userExist = await this.userService.userAlreadyExist('_id', id);
@@ -93,9 +94,9 @@ export class UsersController {
     }
 
     /** updated password bcrypt */
-    let bcryptUser = updatedUser as Users;
+    const bcryptUser = updatedUser as Users;
     if (updatedUser.password) {
-      await bcrypt.hash(updatedUser.password, this.bcrypt_salt, (err: Error, hash: string) => {
+      await bcrypt.hash(updatedUser.password, this.bcryptSalt, (err: Error, hash: string) => {
         if (err) {
           throw new BadRequestException(`error during bcrypt.hash for the user ${updatedUser.name} - ${err.message}`)
         }
@@ -104,5 +105,22 @@ export class UsersController {
     }
 
     return this.userService.editUser(id, bcryptUser);
+  }
+
+  /**
+   * delete one user by id
+   * @param {string} id the user id you want to delete
+   * @return {Users | BadRequestException} the deleted users
+   */
+  @Delete('/:id')
+  async deleteUser(@Param('id') id: string): Promise<Users | BadRequestException> {
+
+    /** user doesn't exist */
+    const userExist = await this.userService.userAlreadyExist('_id', id);
+    if (!userExist) {
+      throw new BadRequestException(`user ${id} doesn't exist`)
+    }
+
+    return this.userService.deleteUser(id);
   }
 }

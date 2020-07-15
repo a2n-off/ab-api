@@ -37,9 +37,9 @@ export class UsersService {
   /**
    * create one user
    * @param {Users} user user object
-   * @return {Users | string} error or success
+   * @return {Users | string | BadRequestException} error or success
    */
-  async createUser(user: Users): Promise<Users> {
+  async createUser(user: Users): Promise<Users | BadRequestException> {
     const newUser = new this.usersModel(user);
     return newUser.save((err: unknown, returnedUser: Users) => {
       if (err) {
@@ -68,5 +68,14 @@ export class UsersService {
   async userAlreadyExist(field: string, value: string): Promise<boolean> {
     const userExist = await this.getUsersByField(field, value);
     return userExist.length > 0;
+  }
+
+  /**
+   * delete one user by this id
+   * @param {string} id the user id you want to delete
+   * @return {Users} the deleted user
+   */
+  async deleteUser(id: string): Promise<Users> {
+    return this.usersModel.findByIdAndDelete(id);
   }
 }
