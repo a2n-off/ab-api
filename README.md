@@ -66,7 +66,10 @@ The script consumes the `.env.test` file **that you have to create** in the `src
 - [x] add CONTRIBUTING.md
 - [x] add CODE_OF_CONDUCT.md
 - [x] add issues templates
-- [ ] users, categories, articles delete endpoint
+- [x] delete endpoint
+    - [x] users
+    - [x] categories
+    - [x] articles
 - [ ] check rest api best practices
 - [x] set `.env.test` for test env
 - [x] bcrypt
