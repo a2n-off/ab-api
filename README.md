@@ -61,6 +61,17 @@ The script consumes the `.env.test` file **that you have to create** in the `src
   This allows the jest sequencer (in `src/_test/config`) to run the files in the desired order.
 - Each test need to be fragmented with `describe` and `it` block
 
+# User & Admin level
+
+The application accepts two levels (roles): `admin` and` user`.
+
+To allow a simpler and more global management of access rights there are two controllers in the `users` folder:
+- one for `user`
+- one for `admin`
+
+Each of these controllers has the function that allows you to create the user with its role.
+The assignment of this role cannot be modified via the creation or modification request.
+
 # Roadmap
 
 - [x] add CONTRIBUTING.md
