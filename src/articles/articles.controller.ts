@@ -1,4 +1,14 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Articles } from './articles.schema';
 import { ArticlesDto } from './articles.dto';
@@ -30,10 +40,10 @@ export class ArticlesController {
   /**
    * create one article
    * @param {ArticlesDto} article the article data
-   * @return {Articles} the created article
+   * @return {Articles | ConflictException} the created article
    */
   @Post()
-  async createArticles(@Body() article: ArticlesDto): Promise<Articles> {
+  async createArticles(@Body() article: ArticlesDto): Promise<Articles | ConflictException> {
 
     /** article title already exist */
     if (await this.articlesService.articleAlreadyExist('title', article.title)) {
@@ -46,10 +56,10 @@ export class ArticlesController {
   /**
    * edit one article
    * @param {string} id the article id you want to edit
-   * @param {ArticlesDto} updatedArticle the updated article data
+   * @param {ArticlesDto | BadRequestException | ConflictException} updatedArticle the updated article data
    */
   @Put('/:id')
-  async editArticles(@Param('id') id: string, @Body() updatedArticle: ArticlesDto): Promise<Articles> {
+  async editArticles(@Param('id') id: string, @Body() updatedArticle: ArticlesDto): Promise<Articles | BadRequestException | ConflictException> {
 
     /** article doesn't exist */
     const articleExist = await this.articlesService.articleAlreadyExist('_id', id);
@@ -66,5 +76,15 @@ export class ArticlesController {
     }
 
     return this.articlesService.editArticles(id, updatedArticle);
+  }
+
+  @Delete('/:id')
+  async deleteArticle(@Param('id') id: string): Promise<Articles | BadRequestException> {
+    /** article doesn't exist */
+    const articleExist = await this.articlesService.articleAlreadyExist('_id', id);
+    if (!articleExist) {
+      throw new BadRequestException(`article ${id} doesn't exist`)
+    }
+    return this.articlesService.deleteArticle(id);
   }
 }

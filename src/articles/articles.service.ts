@@ -35,7 +35,7 @@ export class ArticlesService {
    * @param {Articles} article the articles object
    * @return {Articles | string} error or success
    */
-  async createArticles(article: Articles): Promise<Articles> {
+  async createArticles(article: Articles): Promise<Articles | BadRequestException> {
     const newArticle = new this.articlesModel(article);
     return newArticle.save((err: unknown, returnedArticle: Articles) => {
       if (err) {
@@ -64,5 +64,14 @@ export class ArticlesService {
   async articleAlreadyExist(field: string, value: string): Promise<boolean> {
     const articleExist = await this.getArticlesByField(field, value);
     return articleExist.length > 0;
+  }
+
+  /**
+   * delete one article by this id
+   * @param {string} id the article id
+   * @return {Articles} the deleted article
+   */
+  async deleteArticle(id: string): Promise<Articles> {
+    return this.articlesModel.findByIdAndDelete(id);
   }
 }
