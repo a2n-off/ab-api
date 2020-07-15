@@ -2,7 +2,8 @@ import {
   BadRequestException,
   Body,
   ConflictException,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,6 +16,7 @@ import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
 import { MongoExceptionFilter } from '../utils/mongoExceptionFilter/mongoExceptionFilter';
 import { ConfigService } from '../config/config.service';
+import { LevelEnum } from '../utils/enums/level.enum';
 
 @Controller('/users')
 export class UsersController {
@@ -59,6 +61,7 @@ export class UsersController {
       throw new ConflictException(`${user.name} already exist`)
     }
 
+    /** set password */
     const bcryptUser = user as Users;
     await bcrypt.hash(user.password, this.bcryptSalt, (err: Error, hash: string) => {
       if (err) {
@@ -66,6 +69,9 @@ export class UsersController {
       }
       bcryptUser.password = hash;
     })
+
+    /** set role */
+    bcryptUser.level = LevelEnum.user;
 
     return this.userService.createUser(bcryptUser);
   }
