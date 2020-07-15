@@ -35,7 +35,7 @@ export class CategoriesService {
    * @param {Categories} category the category object
    * @return {Categories | string} error or success
    */
-  async createCategory(category: Categories): Promise<Categories> {
+  async createCategory(category: Categories): Promise<Categories | BadRequestException> {
     const newCategory = new this.categoriesModel(category);
     return newCategory.save((err: unknown, returnedCategory: Categories) => {
       if (err) {
@@ -64,5 +64,14 @@ export class CategoriesService {
   async categoryAlreadyExist(field: string, value: string): Promise<boolean> {
     const categoryExist = await this.getCategoriesByField(field, value);
     return categoryExist.length > 0;
+  }
+
+  /**
+   * delete one category by this id
+   * @param {string} id the category id you want to delete
+   * @return {Users} the deleted category
+   */
+  async deleteCategory(id: string): Promise<Categories> {
+    return this.categoriesModel.findByIdAndDelete(id);
   }
 }

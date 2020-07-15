@@ -1,4 +1,14 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Categories } from './categories.schema';
 import { CategoriesDto } from './categories.dto';
@@ -30,10 +40,10 @@ export class CategoriesController {
   /**
    * create one categories
    * @param {CategoriesDto} category the category data
-   * @return {Categories} the created category
+   * @return {Categories | ConflictException} the created category
    */
   @Post()
-  async createCategories(@Body() category: CategoriesDto): Promise<Categories> {
+  async createCategories(@Body() category: CategoriesDto): Promise<Categories | ConflictException> {
 
     /** category name already exist */
     if (await this.categoriesService.categoryAlreadyExist('name', category.name)) {
@@ -47,9 +57,10 @@ export class CategoriesController {
    * edit one category
    * @param {string} id the category id you want to edit
    * @param {CategoriesDto} updatedCategory the updated category data
+   * @return {Categories | BadRequestException | ConflictException} the edited category
    */
   @Put('/:id')
-  async editCategory(@Param('id') id: string, @Body() updatedCategory: CategoriesDto): Promise<Categories> {
+  async editCategory(@Param('id') id: string, @Body() updatedCategory: CategoriesDto): Promise<Categories | BadRequestException | ConflictException> {
 
     /** category doesn't exist */
     const categoryExist = await this.categoriesService.categoryAlreadyExist('_id', id);
@@ -66,5 +77,20 @@ export class CategoriesController {
     }
 
     return this.categoriesService.editCategory(id, updatedCategory);
+  }
+
+  /**
+   * delete one category by id
+   * @param {string} id the category id
+   * @return {Categories | BadRequestException} the deleted category
+   */
+  @Delete('/:id')
+  async deleteCategory(@Param('id') id: string): Promise<Categories | BadRequestException> {
+    /** category doesn't exist */
+    const categoryExist = await this.categoriesService.categoryAlreadyExist('_id', id);
+    if (!categoryExist) {
+      throw new BadRequestException(`category ${id} doesn't exist`)
+    }
+    return this.categoriesService.deleteCategory(id);
   }
 }
