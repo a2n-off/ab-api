@@ -1,6 +1,18 @@
 ![GitHub](https://img.shields.io/github/license/bouteillerAlan/ab-api?style=flat-square)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=alert_status)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=security_rating)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
 
-[[Description](#description)] | [[Install](#install)] | [[.env file](#env-file)] | [[Test](#test)] | [[Roadmap](#roadmap)]
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=code_smells)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=sqale_index)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=ai%3Aservice_sonar&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=ai%3Aservice_sonar&branch=develop)
+
+🔗 [Install](#install) - 
+[.env file](#env-file) - 
+[Test](#test) -
+[Roadmap](#roadmap)
 
 # ab-api
 
@@ -11,6 +23,17 @@ Personal clean nest api
 The objective of this repo is to offer me an nest api base already built to save time.
 
 The update of the packages being the "only" to do
+
+# Summary
+
+- [💬 Description](#description) 
+- [🎉 Install](#install) 
+- [🔧 .env file](#env-file) 
+- [⚗ Test](#test)
+    - [Operation](#operation)
+    - [Edit](#edit)
+- [🔐 User & Admin level](#user--admin-level)
+- [🚀 Roadmap](#roadmap)
 
 # Install
 
