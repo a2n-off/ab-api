@@ -13,10 +13,30 @@ export class AppController {
    * return the version of the api
    * @return {string} hello world + api version
    */
-  @UseGuards(AuthGuard('jwt'), LevelsGuard)
-  @Levels(LevelEnum.admin)
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  /**
+   * check if the user level is admin
+   * @return {boolean} true if the user have the right
+   */
+  @UseGuards(AuthGuard('jwt'), LevelsGuard)
+  @Levels(LevelEnum.admin)
+  @Get('check/admin')
+  checkAdminLevel(): boolean {
+    return true;
+  }
+
+  /**
+   * check if the user level is user
+   * @return {boolean} true if the user have the right
+   */
+  @UseGuards(AuthGuard('jwt'), LevelsGuard)
+  @Levels(LevelEnum.user)
+  @Get('check/user')
+  checkUserLevel(): boolean {
+    return true;
   }
 }
