@@ -38,8 +38,9 @@ export class UsersController {
     }
 
     /** set password */
-    const bcryptUser = user as Users;
+    const bcryptUser = { ...user as Users };
     bcryptUser.password = await bcrypt.hash(user.password, this.bcryptSalt);
+
     /** throw error if the old and new password is equal for avoiding clear storage */
     if (bcryptUser.password === user.password) {
       throw new BadRequestException(`error during bcrypt.hash for the user ${user.name}`)
@@ -48,7 +49,7 @@ export class UsersController {
     /** set role */
     bcryptUser.level = LevelEnum[level];
 
-    return this.userService.createUser(bcryptUser);
+    return this.userService.createUser(bcryptUser as Users);
   }
 
   /**
@@ -106,7 +107,7 @@ export class UsersController {
     }
 
     /** updated password bcrypt */
-    const bcryptUser = updatedUser as Users;
+    const bcryptUser = { ...updatedUser as Users };
     if (updatedUser.password) {
       /** set password */
       bcryptUser.password = await bcrypt.hash(updatedUser.password, this.bcryptSalt);
