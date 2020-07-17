@@ -27,6 +27,7 @@
     "space-in-parens": ["error", "never"],
     "no-console": "error",
     "new-cap": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "@typescript-eslint/no-explicit-any": "error"
   }
 }
