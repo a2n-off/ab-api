@@ -8,23 +8,47 @@ import {
   Param,
   Post,
   Put,
-  UseFilters,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
-import { MongoExceptionFilter } from '../utils/mongoExceptionFilter/mongoExceptionFilter';
 import { ConfigService } from '../config/config.service';
 import { LevelEnum } from '../utils/enums/level.enum';
 
 @Controller('/users')
 export class UsersController {
 
-  private readonly bcryptSalt: string;
+  private readonly bcryptSalt: number;
 
-  constructor(private readonly userService: UsersService, private readonly env: ConfigService) {
-    this.bcryptSalt = this.env.get('bcryptSalt');
+  constructor(protected readonly userService: UsersService, protected readonly env: ConfigService) {
+    this.bcryptSalt = Number(this.env.get('bcrypt_salt'));
+  }
+
+  /**
+   * create a user with a given level
+   * @param {Users} user the new user data
+   * @param {LevelEnum} level the level you need to appli for the current user
+   * @return {Users | ConflictException | BadRequestException} created user
+   */
+  protected async createUserWithCustomLevel(user: UsersDto, level: LevelEnum): Promise<Users | ConflictException | BadRequestException> {
+    /** user name already exist */
+    if (await this.userService.userAlreadyExist('name', user.name)) {
+      throw new ConflictException(`${user.name} already exist`)
+    }
+
+    /** set password */
+    const bcryptUser = user as Users;
+    bcryptUser.password = await bcrypt.hash(user.password, this.bcryptSalt);
+    /** throw error if the old and new password is equal for avoiding clear storage */
+    if (bcryptUser.password === user.password) {
+      throw new BadRequestException(`error during bcrypt.hash for the user ${user.name}`)
+    }
+
+    /** set role */
+    bcryptUser.level = LevelEnum[level];
+
+    return this.userService.createUser(bcryptUser);
   }
 
   /**
@@ -53,27 +77,9 @@ export class UsersController {
    * @return {Users | BadRequestException | ConflictException} the created user
    */
   @Post()
-  @UseFilters(MongoExceptionFilter)
+  // @UseFilters(MongoExceptionFilter)
   async createUser(@Body() user: UsersDto): Promise<Users | ConflictException | BadRequestException> {
-
-    /** user name already exist */
-    if (await this.userService.userAlreadyExist('name', user.name)) {
-      throw new ConflictException(`${user.name} already exist`)
-    }
-
-    /** set password */
-    const bcryptUser = user as Users;
-    await bcrypt.hash(user.password, this.bcryptSalt, (err: Error, hash: string) => {
-      if (err) {
-        throw new BadRequestException(`error during bcrypt.hash for the user ${user.name} - ${err.message}`)
-      }
-      bcryptUser.password = hash;
-    })
-
-    /** set role */
-    bcryptUser.level = LevelEnum.user;
-
-    return this.userService.createUser(bcryptUser);
+    return this.createUserWithCustomLevel(user, LevelEnum.user);
   }
 
   /**
@@ -102,12 +108,12 @@ export class UsersController {
     /** updated password bcrypt */
     const bcryptUser = updatedUser as Users;
     if (updatedUser.password) {
-      await bcrypt.hash(updatedUser.password, this.bcryptSalt, (err: Error, hash: string) => {
-        if (err) {
-          throw new BadRequestException(`error during bcrypt.hash for the user ${updatedUser.name} - ${err.message}`)
-        }
-        bcryptUser.password = hash;
-      })
+      /** set password */
+      bcryptUser.password = await bcrypt.hash(updatedUser.password, this.bcryptSalt);
+      /** throw error if the old and new password is equal for avoiding clear storage */
+      if (bcryptUser.password === updatedUser.password) {
+        throw new BadRequestException(`error during bcrypt.hash for the user ${updatedUser.name}`)
+      }
     }
 
     return this.userService.editUser(id, bcryptUser);
