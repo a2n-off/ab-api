@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino/dist';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '../config/config.module';
@@ -8,6 +10,8 @@ import { ConfigService } from '../config/config.service';
 import { UsersModule } from '../users/users.module';
 import { ArticlesModule } from '../articles/articles.module';
 import { CategoriesModule } from '../categories/categories.module';
+import { JwtStrategy } from '../security/strategy/jwt.strategy';
+import { UsersSchema } from '../users/users.schema';
 
 @Module({
   imports: [
@@ -29,13 +33,26 @@ import { CategoriesModule } from '../categories/categories.module';
         useUnifiedTopology: true
       })
     }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    MongooseModule.forFeature([{ name: 'users', schema: UsersSchema }]),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (env: ConfigService) => ({
+        secret: env.get('jwt_secret'),
+        signOptions: { expiresIn: '300s' },
+      }),
+    }),
     ConfigModule,
     UsersModule,
     ArticlesModule,
     CategoriesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    JwtStrategy
+  ],
 })
 
 export class AppModule {}
