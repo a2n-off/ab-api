@@ -64,6 +64,7 @@ db_uri  = the db address
 db_port = the db port
 db_name = the db name 
 bcrypt_salt = saltRounds for bcrypt
+jwt_secret = secret for the jwt
 ```
 
 # Test
@@ -108,9 +109,11 @@ The assignment of this role cannot be modified via the creation or modification 
 - [x] set `.env.test` for test env
 - [x] bcrypt
 - [ ] add security
-    - [ ] jwt 
-    - [ ] roles
+    - [x] jwt 
+    - [x] roles
     - [ ] id in payload
+    - [ ] login endpoint
+    - [ ] logout endpoint
 - [ ] check security handbook
 - [ ] mongo login/out test
 - [ ] crud users test
