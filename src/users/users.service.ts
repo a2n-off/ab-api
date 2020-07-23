@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
+
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
 
@@ -25,7 +27,7 @@ export class UsersService {
    * @param {string} value the value to filter the data
    * @return {Users[]} the filtered users in the collection
    */
-  async getUsersByField(field: string, value: string): Promise<Users[]> {
+  async getUsersByField(field: string, value: string | ObjectId): Promise<Users[]> {
     const query = {};
     query[field] = value;
     return this.usersModel.aggregate([
@@ -65,7 +67,7 @@ export class UsersService {
    * @param {string} value the discriminant
    * @return {boolean} user exist or not
    */
-  async userAlreadyExist(field: string, value: string): Promise<boolean> {
+  async userAlreadyExist(field: string, value: string | ObjectId): Promise<boolean> {
     const userExist = await this.getUsersByField(field, value);
     return userExist.length > 0;
   }

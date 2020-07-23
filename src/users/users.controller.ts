@@ -10,6 +10,8 @@ import {
   Put,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';  
+
 import { UsersService } from './users.service';
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
@@ -93,16 +95,16 @@ export class UsersController {
   async editUser(@Param('id') id: string, @Body() updatedUser: UsersDto): Promise<Users | BadRequestException | ConflictException> {
 
     /** user doesn't exist */
-    const userExist = await this.userService.userAlreadyExist('_id', id);
+    const userExist = await this.userService.userAlreadyExist('_id', new ObjectId(id));
     if (!userExist) {
-      throw new BadRequestException(`${updatedUser.name} doesn't exist`)
+      throw new BadRequestException(`${updatedUser.name} doesn't exist`);
     }
 
     /** updated user name already exist */
     if (updatedUser.name) {
       const userNameExist = await this.userService.userAlreadyExist('name', updatedUser.name);
       if (userNameExist) {
-        throw new ConflictException(`${updatedUser.name} already exist`)
+        throw new ConflictException(`${updatedUser.name} already exist`);
       }
     }
 
@@ -113,7 +115,7 @@ export class UsersController {
       bcryptUser.password = await bcrypt.hash(updatedUser.password, this.bcryptSalt);
       /** throw error if the old and new password is equal for avoiding clear storage */
       if (bcryptUser.password === updatedUser.password) {
-        throw new BadRequestException(`error during bcrypt.hash for the user ${updatedUser.name}`)
+        throw new BadRequestException(`error during bcrypt.hash for the user ${updatedUser.name}`);
       }
     }
 
@@ -129,9 +131,9 @@ export class UsersController {
   async deleteUser(@Param('id') id: string): Promise<Users | BadRequestException> {
 
     /** user doesn't exist */
-    const userExist = await this.userService.userAlreadyExist('_id', id);
+    const userExist = await this.userService.userAlreadyExist('_id', new ObjectId(id));
     if (!userExist) {
-      throw new BadRequestException(`user ${id} doesn't exist`)
+      throw new BadRequestException(`user ${id} doesn't exist`);
     }
 
     return this.userService.deleteUser(id);
