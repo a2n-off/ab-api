@@ -23,11 +23,21 @@
     "import/prefer-default-export": "off",
     "padded-blocks": "off",
     "indent": ["error", 2],
+
     "object-curly-spacing": ["error", "always"],
     "space-in-parens": ["error", "never"],
+    "keyword-spacing": "error",
+    "comma-spacing": "error",
+    "key-spacing": "error",
+    "space-infix-ops": "error",
+    "arrow-spacing": "error",
+    "type-annotation-spacing": "error",
+
     "no-console": "error",
     "new-cap": "off",
     "class-methods-use-this": "off",
-    "@typescript-eslint/no-explicit-any": "error"
+    "@typescript-eslint/no-explicit-any": "error",
+    "no-underscore-dangle": "off",
+    "semi": "error"
   }
 }
