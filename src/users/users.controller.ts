@@ -14,7 +14,7 @@ import { UsersService } from './users.service';
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
 import { ConfigService } from '../config/config.service';
-import { LevelEnum } from '../utils/enums/level.enum';
+import { LevelEnum } from '../common/enums/level.enum';
 
 @Controller('/users')
 export class UsersController {

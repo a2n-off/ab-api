@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { LevelEnum } from '../utils/enums/level.enum';
+import { LevelEnum } from '../common/enums/level.enum';
 
 @Injectable()
 export class LevelsGuard implements CanActivate {
