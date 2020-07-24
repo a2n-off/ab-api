@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { Levels } from '../security/decorator/levels.decorator';
 import { LevelsGuard } from '../security/levels.guard';
-import { LevelEnum } from '../utils/enums/level.enum';
+import { LevelEnum } from '../common/enums/level.enum';
 
 @Controller()
 export class AppController {

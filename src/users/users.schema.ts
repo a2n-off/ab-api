@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { LevelEnum } from '../utils/enums/level.enum';
+import { LevelEnum } from '../common/enums/level.enum';
 
 @Schema()
 export class Users extends Document {

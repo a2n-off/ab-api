@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { ConfigService } from '../config/config.service';
 import { UsersDto } from './users.dto';
 import { Users } from './users.schema';
-import { LevelEnum } from '../utils/enums/level.enum';
+import { LevelEnum } from '../common/enums/level.enum';
 import { UsersController } from './users.controller';
 
 @Controller('/admin')
