@@ -96,6 +96,8 @@ To allow a simpler and more global management of access rights there are two con
 Each of these controllers has the function that allows you to create the user with its role.
 The assignment of this role cannot be modified via the creation or modification request.
 
+By default, the api is full "admin" protected, you need to create a admin user in the "users" collection or update the protection in the code.
+
 # Roadmap
 
 - [x] add CONTRIBUTING.md
@@ -105,15 +107,15 @@ The assignment of this role cannot be modified via the creation or modification 
     - [x] users
     - [x] categories
     - [x] articles
-- [ ] check rest api best practices
 - [x] set `.env.test` for test env
 - [x] bcrypt
 - [ ] add security
     - [x] jwt 
     - [x] roles
     - [ ] id in payload
-    - [ ] login endpoint
+    - [x] login endpoint
     - [ ] logout endpoint
+- [x] check rest api best practices
 - [ ] check security handbook
 - [ ] mongo login/out test
 - [ ] crud users test
