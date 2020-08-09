@@ -30,14 +30,16 @@ export class AppService {
     // check the password
     const checkPsw = await bcrypt.compare(user.password, dbUser[0].password);
     if (!checkPsw) {
-      throw new ForbiddenException(`Wrong credential for user ${user.name}`)
+      throw new ForbiddenException(`Wrong credential for user ${user.name}`);
     }
 
     // build the jwt
     const payload = {name: dbUser[0].name, role: dbUser[0].level, timestamp: Date()};
+    const jwt = await this.jwtService.sign(payload);
 
     // stock the jwt ?
+    await this.userService.editUser(dbUser[0]._id, {jwt});
 
-    return this.jwtService.sign(payload);
+    return jwt;
   }
 }
