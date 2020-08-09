@@ -4,13 +4,17 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { UsersSchema } from './users.schema';
 import { ConfigModule } from '../config/config.module';
+import { AdminController } from './admin.controller';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'users', schema: UsersSchema }]),
     ConfigModule
   ],
-  controllers: [UsersController],
+  controllers: [
+    UsersController,
+    AdminController
+  ],
   providers: [UsersService],
 })
 
