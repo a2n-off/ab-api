@@ -45,7 +45,7 @@ The update of the packages being the "only" to do
 
 ```mongojs
 use mydb;
-db.createUser({user: "toto", pwd: "mypswd", roles: [{role: "readWrite", db: "mydb"}]});
+db.createUser({user: "toto", pwd: "mypswd", roles: [{role: "readWrite", db: "mydb"}], mechanisms:["SCRAM-SHA-1"]});
 ```
 - [ ] launch in dev with `yarn dev` or in prod with `yarn build` `yarn start:prod`
 
