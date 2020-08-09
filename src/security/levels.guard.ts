@@ -20,7 +20,8 @@ export class LevelsGuard implements CanActivate {
       return true;
     }
 
-    /** get the level to the request
+    /**
+     * get the level to the request
      * request.user is the "return" of the function validate() in the jwt.strategy.ts
      */
     const request = context.switchToHttp().getRequest();

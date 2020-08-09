@@ -7,12 +7,18 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put, UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Articles } from './articles.schema';
 import { ArticlesDto } from './articles.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Levels } from '../security/decorator/levels.decorator';
+import { LevelsGuard } from '../security/levels.guard';
+import { LevelEnum } from '../common/enums/level.enum';
 
+@UseGuards(AuthGuard('jwt'), LevelsGuard)
+@Levels(LevelEnum.admin)
 @Controller('/articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}

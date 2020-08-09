@@ -7,17 +7,21 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put, UseGuards,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { ObjectId } from 'mongodb';  
-
+import { ObjectId } from 'mongodb';
 import { UsersService } from './users.service';
 import { Users } from './users.schema';
 import { UsersDto } from './users.dto';
 import { ConfigService } from '../config/config.service';
 import { LevelEnum } from '../common/enums/level.enum';
+import { AuthGuard } from '@nestjs/passport';
+import { Levels } from '../security/decorator/levels.decorator';
+import { LevelsGuard } from '../security/levels.guard';
 
+@UseGuards(AuthGuard('jwt'), LevelsGuard)
+@Levels(LevelEnum.admin)
 @Controller('/users')
 export class UsersController {
 
