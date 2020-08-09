@@ -24,10 +24,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    */
   async validate(payload: any): Promise<Users | false> {
 
-    console.log('payload', payload);
-
     const userExist = await this.userModel.aggregate([
-      { $match: { name: payload.username } },
+      { $match: { name: payload.name, level: payload.role } },
       { $project: { password: 0 } },
     ]);
 
