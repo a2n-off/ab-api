@@ -1,9 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { Levels } from '../security/decorator/levels.decorator';
 import { LevelsGuard } from '../security/levels.guard';
 import { LevelEnum } from '../common/enums/level.enum';
+import { LoginDto } from './login.dto';
 
 @Controller()
 export class AppController {
@@ -16,6 +17,16 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  /**
+   * return a jwt for the login step
+   * @param {{name: string, password: string}} user the credential
+   * @return {string} the jwt
+   */
+  @Post('/login')
+  login(@Body() user: LoginDto): Promise<string> {
+    return this.appService.login(user);
   }
 
   /**
