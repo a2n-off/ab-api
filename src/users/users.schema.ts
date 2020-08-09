@@ -14,6 +14,9 @@ export class Users extends Document {
   @Prop()
   level: LevelEnum;
 
+  @Prop()
+  jwt: string;
+
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 import { Users } from './users.schema';
-import { UsersDto } from './users.dto';
+import { UpdateUsersDto } from './users.dto';
 
 @Injectable()
 export class UsersService {
@@ -72,7 +72,7 @@ export class UsersService {
    * @param {object} updatedUser the updated data
    * @return {Users} the updated user
    */
-  async editUser(id: string, updatedUser: UsersDto): Promise<Users> {
+  async editUser(id: string, updatedUser: UpdateUsersDto): Promise<Users> {
     return this.usersModel.findOneAndUpdate({ _id: id }, updatedUser);
   }
 

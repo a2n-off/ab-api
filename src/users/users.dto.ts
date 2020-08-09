@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 
 export class UsersDto {
   @IsString()
@@ -9,4 +9,19 @@ export class UsersDto {
   @IsString()
   @IsNotEmpty()
   readonly password: string;
+}
+
+export class UpdateUsersDto {
+  @IsString()
+  @IsOptional()
+  @Length(3)
+  readonly name?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly password?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly jwt?: string;
 }
