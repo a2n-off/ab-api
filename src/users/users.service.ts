@@ -37,6 +37,21 @@ export class UsersService {
   }
 
   /**
+   * return all the user selected by the column = value couple
+   * with the password field
+   * @param {string} field the name
+   * @param {string} value the value to filter the data
+   * @return {Users[]} the filtered users in the collection
+   */
+  async getUsersByFieldWithPassword(field: string, value: string | ObjectId): Promise<Users[]> {
+    const query = {};
+    query[field] = value;
+    return this.usersModel.aggregate([
+      { $match: query }
+    ]);
+  }
+
+  /**
    * create one user
    * @param {Users} user user object
    * @return {Users | string | BadRequestException} error or success
