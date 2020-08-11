@@ -19,7 +19,7 @@ import { LevelEnum } from '../common/enums/level.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { Levels } from '../security/decorator/levels.decorator';
 import { LevelsGuard } from '../security/levels.guard';
-import { AuthUser } from '../common/decorator/request.decorator';
+import { AuthUser } from '../common/decorators/request.decorator';
 
 @UseGuards(AuthGuard('jwt'), LevelsGuard)
 @Levels(LevelEnum.admin)

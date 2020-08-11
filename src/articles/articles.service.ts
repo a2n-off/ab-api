@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Articles } from './articles.schema';
 import { ArticlesDto } from './articles.dto';
+import { aggregateMatch } from '../common/interfaces/aggregateMatch.interface';
 
 @Injectable()
 export class ArticlesService {
@@ -18,13 +19,15 @@ export class ArticlesService {
 
   /**
    * return all the articles selected by the column = value couple
-   * @param {string} field the name of the column
-   * @param {string} value the discriminant
+   * @param {aggregateMatch[]} selectors the list of the selector
    * @return {Categories[]} the filtered articles in the collection
    */
-  async getArticlesByField(field: string, value: string): Promise<Articles[]> {
+  async getArticlesByField(selectors: aggregateMatch[]): Promise<Articles[]> {
     const query = {};
-    query[field] = value;
+    selectors.forEach((selector: aggregateMatch) => {
+      query[selector.field] = selector.value;
+    })
+
     return this.articlesModel.aggregate([
       { $match: query }
     ])
@@ -62,7 +65,7 @@ export class ArticlesService {
    * @return {boolean} article exist or not
    */
   async articleAlreadyExist(field: string, value: string): Promise<boolean> {
-    const articleExist = await this.getArticlesByField(field, value);
+    const articleExist = await this.getArticlesByField([{ field, value }]);
     return articleExist.length > 0;
   }
 

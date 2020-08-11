@@ -7,7 +7,8 @@ import {
   Get,
   Param,
   Post,
-  Put, UseGuards,
+  Put, UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Articles } from './articles.schema';
@@ -16,6 +17,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Levels } from '../security/decorator/levels.decorator';
 import { LevelsGuard } from '../security/levels.guard';
 import { LevelEnum } from '../common/enums/level.enum';
+import { AuthUser } from '../common/decorators/request.decorator';
+import { Users } from '../users/users.schema';
 
 @UseGuards(AuthGuard('jwt'), LevelsGuard)
 @Levels(LevelEnum.admin)
@@ -40,7 +43,7 @@ export class ArticlesController {
    */
   @Get('/:field/:value')
   getArticlesByColumn(@Param('field') field: string, @Param('value') value: string): Promise<Articles[]> {
-    return this.articlesService.getArticlesByField(field, value);
+    return this.articlesService.getArticlesByField([{ field, value }]);
   }
 
   /**
@@ -61,16 +64,31 @@ export class ArticlesController {
 
   /**
    * edit one article
+   * @param {Users} user the owner of the article pass through the jwt or admin user
    * @param {string} id the article id you want to edit
    * @param {ArticlesDto | BadRequestException | ConflictException} updatedArticle the updated article data
    */
   @Put('/:id')
-  async editArticles(@Param('id') id: string, @Body() updatedArticle: ArticlesDto): Promise<Articles | BadRequestException | ConflictException> {
+  async editArticles(@AuthUser() user: Users, @Param('id') id: string, @Body() updatedArticle: ArticlesDto): Promise<Articles | BadRequestException | UnauthorizedException | ConflictException> {
 
     /** article doesn't exist */
     const articleExist = await this.articlesService.articleAlreadyExist('_id', id);
     if (!articleExist) {
       throw new BadRequestException(`${updatedArticle.title} doesn't exist`)
+    }
+
+    /** check if the user is the owner or admin */
+    const isAdmin = user.level === LevelEnum.admin;
+    const userId = user._id;
+
+    /** if no id and no admin right */
+    if (!isAdmin && !userId) {
+      throw new UnauthorizedException(`Your user is not authorized to modify this article`);
+    }
+    const ownerArticles = await this.articlesService.getArticlesByField([{field: '_id', value: id}, {field: 'authorId', value: userId}]);
+
+    if (ownerArticles.length === 0) {
+      throw new UnauthorizedException(`Your user is not authorized to modify this article`);
     }
 
     /** updated article title already exist */
