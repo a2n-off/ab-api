@@ -13,12 +13,13 @@ import * as bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 import { UsersService } from './users.service';
 import { Users } from './users.schema';
-import { UsersDto } from './users.dto';
+import { UpdateUsersDto, UsersDto } from './users.dto';
 import { ConfigService } from '../config/config.service';
 import { LevelEnum } from '../common/enums/level.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { Levels } from '../security/decorator/levels.decorator';
 import { LevelsGuard } from '../security/levels.guard';
+import { AuthUser } from '../common/decorator/request.decorator';
 
 @UseGuards(AuthGuard('jwt'), LevelsGuard)
 @Levels(LevelEnum.admin)
@@ -34,7 +35,7 @@ export class UsersController {
   /**
    * create a user with a given level
    * @param {Users} user the new user data
-   * @param {LevelEnum} level the level you need to appli for the current user
+   * @param {LevelEnum} level the level you need to app for the current user
    * @return {Users | ConflictException | BadRequestException} created user
    */
   protected async createUserWithCustomLevel(user: UsersDto, level: LevelEnum): Promise<Users | ConflictException | BadRequestException> {
@@ -91,12 +92,17 @@ export class UsersController {
 
   /**
    * edit one user
-   * @param {string} id the user id you want to edit
+   * @param {Users} user the user you want to edit pass through the jwt
    * @param {UsersDto} updatedUser the updated user data
    * @return {Users | BadRequestException | ConflictException} the updated user
    */
-  @Put('/:id')
-  async editUser(@Param('id') id: string, @Body() updatedUser: UsersDto): Promise<Users | BadRequestException | ConflictException> {
+  @Put()
+  async editUser(@AuthUser() user: Users, @Body() updatedUser: UpdateUsersDto): Promise<Users | BadRequestException | ConflictException> {
+
+    const id = user._id;
+    if (!id) {
+      throw new BadRequestException(`No id provided`);
+    }
 
     /** user doesn't exist */
     const userExist = await this.userService.userAlreadyExist('_id', new ObjectId(id));
@@ -128,11 +134,16 @@ export class UsersController {
 
   /**
    * delete one user by id
-   * @param {string} id the user id you want to delete
+   * @param {Users} user the user you want to delete pass through the jwt
    * @return {Users | BadRequestException} the deleted users
    */
-  @Delete('/:id')
-  async deleteUser(@Param('id') id: string): Promise<Users | BadRequestException> {
+  @Delete()
+  async deleteUser(@AuthUser() user: Users): Promise<Users | BadRequestException> {
+
+    const id = user._id;
+    if (!id) {
+      throw new BadRequestException(`No id provided`);
+    }
 
     /** user doesn't exist */
     const userExist = await this.userService.userAlreadyExist('_id', new ObjectId(id));
