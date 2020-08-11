@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { Levels } from '../security/decorator/levels.decorator';
 import { LevelsGuard } from '../security/levels.guard';
 import { LevelEnum } from '../common/enums/level.enum';
 import { LoginDto } from './login.dto';
+import { AuthUser } from '../common/decorators/request.decorator';
+import { Users } from '../users/users.schema';
 
 @Controller()
 export class AppController {
@@ -27,6 +29,22 @@ export class AppController {
   @Post('/login')
   login(@Body() user: LoginDto): Promise<string> {
     return this.appService.login(user);
+  }
+
+  /**
+   * delete a jwt for the logout step
+   * @param {Users} user the user you want to logout
+   * @return {Users | BadRequestException} the modified user
+   */
+  @Post('/logout')
+  logout(@AuthUser() user: Users): Promise<Users | BadRequestException> {
+    const userId = user._id;
+
+    if (!userId) {
+      throw new BadRequestException(`No id provided for logout`);
+    }
+
+    return this.appService.logout(userId);
   }
 
   /**

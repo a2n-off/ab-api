@@ -37,9 +37,13 @@ export class AppService {
     const payload = {name: dbUser[0].name, role: dbUser[0].level, timestamp: Date()};
     const jwt = await this.jwtService.sign(payload);
 
-    // stock the jwt ?
+    // stock the jwt
     await this.userService.editUser(dbUser[0]._id, {jwt});
 
     return jwt;
+  }
+
+  async logout(id: string) {
+    return this.userService.editUser(id, {jwt: undefined});
   }
 }
