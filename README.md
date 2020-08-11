@@ -112,9 +112,10 @@ By default, the api is full "admin" protected, you need to create a admin user i
 - [ ] add security
     - [x] jwt 
     - [x] roles
-    - [ ] id in payload
+    - [x] id in payload
     - [x] login endpoint
     - [ ] logout endpoint
+- [ ] add public endpoint    
 - [x] check rest api best practices
 - [ ] check security handbook
 - [ ] mongo login/out test
