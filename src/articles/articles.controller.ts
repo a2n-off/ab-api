@@ -78,16 +78,9 @@ export class ArticlesController {
     }
 
     /** check if the user is the owner or admin */
-    const isAdmin = user.level === LevelEnum.admin;
-    const userId = user._id;
+    const isOwner = this.articlesService.checkArticleOwner(user, id);
 
-    /** if no id and no admin right */
-    if (!isAdmin && !userId) {
-      throw new UnauthorizedException(`Your user is not authorized to modify this article`);
-    }
-    const ownerArticles = await this.articlesService.getArticlesByField([{field: '_id', value: id}, {field: 'authorId', value: userId}]);
-
-    if (ownerArticles.length === 0) {
+    if (!isOwner) {
       throw new UnauthorizedException(`Your user is not authorized to modify this article`);
     }
 
@@ -102,13 +95,27 @@ export class ArticlesController {
     return this.articlesService.editArticles(id, updatedArticle);
   }
 
+  /**
+   * delete one article by id
+   * @param {Users} user the owner
+   * @param {string} id the article you want to delete
+   * @return {Articles | BadRequestException} the deleted article
+   */
   @Delete('/:id')
-  async deleteArticle(@Param('id') id: string): Promise<Articles | BadRequestException> {
+  async deleteArticle(@AuthUser() user: Users, @Param('id') id: string): Promise<Articles | BadRequestException> {
     /** article doesn't exist */
     const articleExist = await this.articlesService.articleAlreadyExist('_id', id);
     if (!articleExist) {
       throw new BadRequestException(`article ${id} doesn't exist`)
     }
+
+    /** check if the user is the owner or admin */
+    const isOwner = this.articlesService.checkArticleOwner(user, id);
+
+    if (!isOwner) {
+      throw new UnauthorizedException(`Your user is not authorized to delete this article`);
+    }
+
     return this.articlesService.deleteArticle(id);
   }
 }

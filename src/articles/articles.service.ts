@@ -1,9 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Articles } from './articles.schema';
 import { ArticlesDto } from './articles.dto';
 import { aggregateMatch } from '../common/interfaces/aggregateMatch.interface';
+import { LevelEnum } from '../common/enums/level.enum';
+import { Users } from '../users/users.schema';
 
 @Injectable()
 export class ArticlesService {
@@ -76,5 +78,24 @@ export class ArticlesService {
    */
   async deleteArticle(id: string): Promise<Articles> {
     return this.articlesModel.findByIdAndDelete(id);
+  }
+
+  /**
+   * check if a specific article is owned by a specific user
+   * @param {Users} user the user you want to test
+   * @param {string} articleId the article id you want to check
+   * @return {boolean} true or false
+   */
+  async checkArticleOwner(user: Users, articleId: string): Promise<boolean> {
+    const isAdmin = user.level === LevelEnum.admin;
+    const userId = user._id;
+
+    if (!isAdmin && !userId) {
+      return false;
+    }
+
+    const ownerArticles = await this.getArticlesByField([{field: '_id', value: articleId}, {field: 'authorId', value: userId}]);
+
+    return ownerArticles.length !== 0;
   }
 }
