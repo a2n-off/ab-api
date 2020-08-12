@@ -1,0 +1,22 @@
+name: Todo to issue
+
+on:
+  push:
+    branche:
+      - '*'
+
+jobs:
+  todo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: 'TODO to issue'
+        uses: alstr/todo-to-issue-action@v1.2-beta
+        with:
+          REPO: ${{ github.repository }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LABEL: '// todo'
+          COMMENT_MARKER: '//'
+        id: 'todo'
