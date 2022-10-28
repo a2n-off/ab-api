@@ -35,7 +35,7 @@
     "dotenv": "^8.2.0",
     "mongoose": "^5.9.18",
     "nestjs-pino": "^1.2.0",
-    "passport": "^0.4.1",
+    "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
